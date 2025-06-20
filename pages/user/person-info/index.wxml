@@ -3,12 +3,27 @@
     <t-cell
       title="头像"
       center="{{true}}"
-      data-type="avatarUrl"
-      bind:click="onClickCell"
+    
       arrow
       t-class-left="order-group__left"
     >
-      <t-image slot="note" src="{{personInfo.avatarUrl}}" t-class="avatarUrl" mode="aspectFill" />
+
+      <!-- <t-image slot="note" src="{{personInfo.avatarUrl}}" t-class="avatarUrl" mode="aspectFill" /> -->
+        <button
+                class="avator w-120 h-120 radius-60 p-0"
+                open-type="chooseAvatar"
+                @chooseavatar="handleChooseAvatar"
+                  data-type="avatarUrl"
+      bind:click="onClickCell"
+              >
+                <image
+                  class="avatar width-100 height-100"
+                  :src="
+                    userInfo.personInfo ||
+                    'https://www.leadfund.com.cn/api/h5tool/img/1544603453771374594'
+                  "
+                ></image>
+              </button>
     </t-cell>
     <t-cell
       title="昵称"

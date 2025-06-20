@@ -9,7 +9,19 @@
   <!-- 已登录但未授权用户信息情况 -->
   <block wx:if="{{currAuthStep === AuthStepType.TWO}}">
     <view class="user-center-card__header">
-      <t-avatar image="{{userInfo.avatarUrl || defaultAvatarUrl}}" class="user-center-card__header__avatar" />
+      <button
+                class="avator w-120 h-120 radius-60 p-0"
+                open-type="chooseAvatar"
+                @chooseavatar="handleChooseAvatar"
+              >
+                <image
+                  class="avatar width-100 height-100"
+                  :src="
+                    userInfo.avatarUrl ||
+                    'https://www.leadfund.com.cn/api/h5tool/img/1544603453771374594'
+                  "
+                ></image>
+              </button>
       <view class="user-center-card__header__name">{{userInfo.nickName || '微信用户'}}</view>
       <!-- 需要授权用户信息，通过slot添加弹窗 -->
       <view class="user-center-card__header__transparent" wx:if="{{isNeedGetUserInfo}}">
