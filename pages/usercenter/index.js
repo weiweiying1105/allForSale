@@ -1,6 +1,10 @@
 import { fetchUserCenter } from '../../services/usercenter/fetchUsercenter';
 import Toast from 'tdesign-miniprogram/toast/index';
-
+const AuthStepType={
+  ONE:1,
+  TWO:2,
+  THREE:3
+}
 const menuData = [
   [
     {
@@ -76,12 +80,11 @@ const orderTagInfos = [
     status: 1,
   },
 ];
-
 const getDefaultData = () => ({
   showMakePhone: false,
   userInfo: {
     avatarUrl: '',
-    nickName: '正在登录...',
+    nickName: '微信用户',
     phoneNumber: '',
   },
   menuData,
@@ -96,6 +99,7 @@ Page({
   data: getDefaultData(),
 
   onLoad() {
+    console.log('onLoad',getApp().globalData.currAuthStep);
     this.getVersionInfo();
   },
 
@@ -107,10 +111,18 @@ Page({
     this.init();
   },
 
-  init() {
-    this.fetUseriInfoHandle();
+  async init() {
+    // this.fetUseriInfoHandle();
+    console.log('onShow',getApp());
+    const res = await getApp().checkLogin()
+    console.log('res',res);
+    if(!res.userInfo){
+      this.setData({
+        currAuthStep:AuthStepType.TWO,
+      })
+    }
   },
-
+  
   fetUseriInfoHandle() {
     fetchUserCenter().then(({ userInfo, countsData, orderTagInfos: orderInfo, customerServiceInfo }) => {
       // eslint-disable-next-line no-unused-expressions
@@ -126,6 +138,7 @@ Page({
         ...v,
         ...orderInfo[index],
       }));
+
       this.setData({
         userInfo,
         menuData,
@@ -217,7 +230,7 @@ Page({
   gotoUserEditPage() {
     const { currAuthStep } = this.data;
     if (currAuthStep === 2) {
-      wx.navigateTo({ url: '/pages/user/person-info/index' });
+      
     } else {
       this.fetUseriInfoHandle();
     }

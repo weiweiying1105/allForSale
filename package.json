@@ -3,8 +3,10 @@
   "version": "1.0.1",
   "description": "",
   "main": "app.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "cross-env NODE_ENV=test node app.js",
+    "start:prod": "cross-env NODE_ENV=production node app.js",
     "lint": "eslint --cache --fix --ext .js",
     "check": "node config/eslintCheck.js",
     "prepare": "husky install",
@@ -25,6 +27,7 @@
   },
   "dependencies": {
     "dayjs": "^1.9.3",
+    "node-fetch": "^3.3.2",
     "tdesign-miniprogram": "1.0.0",
     "tslib": "^1.11.1"
   },
