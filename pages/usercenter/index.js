@@ -1,77 +1,77 @@
-import { fetchUserCenter } from '../../services/usercenter/fetchUsercenter';
-import Toast from 'tdesign-miniprogram/toast/index';
-import { wxLogin } from '../../utils/wxLogin';
+import { fetchUserCenter } from "../../services/usercenter/fetchUsercenter";
+import Toast from "tdesign-miniprogram/toast/index";
+import { wxLogin } from "../../utils/wxLogin";
 
 const menuData = [
   [
     {
-      title: '收货地址',
-      tit: '',
-      url: '',
-      type: 'address',
+      title: "收货地址",
+      tit: "",
+      url: "",
+      type: "address",
     },
-    {
-      title: '优惠券',
-      tit: '',
-      url: '',
-      type: 'coupon',
-    },
-    {
-      title: '积分',
-      tit: '',
-      url: '',
-      type: 'point',
-    },
+    // {
+    //   title: "优惠券",
+    //   tit: "",
+    //   url: "",
+    //   type: "coupon",
+    // },
+    // {
+    //   title: "积分",
+    //   tit: "",
+    //   url: "",
+    //   type: "point",
+    // },
   ],
   [
     {
-      title: '帮助中心',
-      tit: '',
-      url: '',
-      type: 'help-center',
+      title: "帮助中心",
+      tit: "",
+      url: "",
+      type: "help-center",
     },
     {
-      title: '客服热线',
-      tit: '',
-      url: '',
-      type: 'service',
-      icon: 'service',
+      title: "客服热线",
+      tit: "",
+      url: "",
+      type: "service",
+      icon: "service",
     },
   ],
 ];
 
 const orderTagInfos = [
   {
-    title: '待付款',
-    iconName: 'wallet',
+    title: "待付款",
+    iconName: "wallet",
     orderNum: 0,
     tabType: 5,
     status: 1,
   },
   {
-    title: '待发货',
-    iconName: 'deliver',
+    title: "待发货",
+    iconName: "deliver",
     orderNum: 0,
     tabType: 10,
     status: 1,
   },
   {
-    title: '待收货',
-    iconName: 'package',
+    title: "待收货",
+    iconName: "package",
     orderNum: 0,
     tabType: 40,
     status: 1,
   },
   {
-    title: '待评价',
-    iconName: 'comment',
+    title: "待评价",
+    iconName: "comment",
     orderNum: 0,
     tabType: 60,
     status: 1,
   },
   {
-    title: '退款/售后',
-    iconName: 'exchang',
+    title: "退款/售后",
+    iconName: "exchang",
     orderNum: 0,
     tabType: 0,
     status: 1,
@@ -81,37 +81,36 @@ const orderTagInfos = [
 const getDefaultData = () => ({
   showMakePhone: false,
   userInfo: {
-    avatarUrl: '',
-    nickName: '正在登录...',
-    phoneNumber: '',
+    avatarUrl: "",
+    nickName: "",
+    phoneNumber: "",
   },
   menuData,
   orderTagInfos,
   customerServiceInfo: {},
   currAuthStep: 1,
   showKefu: true,
-  versionNo: '',
+  versionNo: "",
 });
 
 Page({
   data: getDefaultData(),
 
-  // onLoad() {
-  //   this.getVersionInfo();
-  // },
-   async onLoad() {
+  async onLoad() {
     try {
       const openid = await wxLogin();
-      wx.setStorageSync('openid', openid);
+      // console.log("!!!openid", await wxLogin());
+      wx.setStorageSync("openid", openid);
+      // this.init();
       // 继续页面初始化逻辑
-       this.getVersionInfo();
+      this.getVersionInfo();
     } catch (error) {
-      console.error('登录失败', error);
+      console.error("登录失败", error);
     }
   },
 
   onShow() {
-    console.log('openid',wx.getStorageSync('openid'))
+    // console.log("openid", wx.getStorageSync("openid"));
     this.getTabBar().init();
     this.init();
   },
@@ -124,19 +123,23 @@ Page({
   },
   // 获取用户中心的信息，包括：用户信息、订单数量、订单标签、客服信息
   fetUseriInfoHandle() {
-    fetchUserCenter().then(({ userInfo, countsData, orderTagInfos: orderInfo, customerServiceInfo }) => {
+    fetchUserCenter().then(({ data }) => {
+      console.log("用户中心数据", data);
+      const { userInfo, orderTagInfos, countsData, customerServiceInfo } =
+        data.data;
+      console.log("用户信息", userInfo);
       // eslint-disable-next-line no-unused-expressions
       menuData?.[0].forEach((v) => {
-        countsData.forEach((counts) => {
+        countsData?.forEach((counts) => {
           if (counts.type === v.type) {
             // eslint-disable-next-line no-param-reassign
             v.tit = counts.num;
           }
         });
       });
-      const info = orderTagInfos.map((v, index) => ({
+      const info = orderTagInfos?.map((v, index) => ({
         ...v,
-        ...orderInfo[index],
+        ...(orderInfo ? orderInfo[index] : {}),
       }));
       this.setData({
         userInfo,
@@ -145,6 +148,7 @@ Page({
         customerServiceInfo,
         currAuthStep: 2,
       });
+      console.log("currAuthStep", this.data.currAuthStep);
       wx.stopPullDownRefresh();
     });
   },
@@ -153,44 +157,44 @@ Page({
     const { type } = currentTarget.dataset;
 
     switch (type) {
-      case 'address': {
-        wx.navigateTo({ url: '/pages/user/address/list/index' });
+      case "address": {
+        wx.navigateTo({ url: "/pages/user/address/list/index" });
         break;
       }
-      case 'service': {
+      case "service": {
         this.openMakePhone();
         break;
       }
-      case 'help-center': {
+      case "help-center": {
         Toast({
           context: this,
-          selector: '#t-toast',
-          message: '你点击了帮助中心',
-          icon: '',
+          selector: "#t-toast",
+          message: "你点击了帮助中心",
+          icon: "",
           duration: 1000,
         });
         break;
       }
-      case 'point': {
+      case "point": {
         Toast({
           context: this,
-          selector: '#t-toast',
-          message: '你点击了积分菜单',
-          icon: '',
+          selector: "#t-toast",
+          message: "你点击了积分菜单",
+          icon: "",
           duration: 1000,
         });
         break;
       }
-      case 'coupon': {
-        wx.navigateTo({ url: '/pages/coupon/coupon-list/index' });
+      case "coupon": {
+        wx.navigateTo({ url: "/pages/coupon/coupon-list/index" });
         break;
       }
       default: {
         Toast({
           context: this,
-          selector: '#t-toast',
-          message: '未知跳转',
-          icon: '',
+          selector: "#t-toast",
+          message: "未知跳转",
+          icon: "",
           duration: 1000,
         });
         break;
@@ -202,14 +206,14 @@ Page({
     const status = e.detail.tabType;
 
     if (status === 0) {
-      wx.navigateTo({ url: '/pages/order/after-service-list/index' });
+      wx.navigateTo({ url: "/pages/order/after-service-list/index" });
     } else {
       wx.navigateTo({ url: `/pages/order/order-list/index?status=${status}` });
     }
   },
 
   jumpAllOrder() {
-    wx.navigateTo({ url: '/pages/order/order-list/index' });
+    wx.navigateTo({ url: "/pages/order/order-list/index" });
   },
 
   openMakePhone() {
@@ -229,7 +233,7 @@ Page({
   gotoUserEditPage() {
     const { currAuthStep } = this.data;
     if (currAuthStep === 2) {
-      wx.navigateTo({ url: '/pages/user/person-info/index' });
+      wx.navigateTo({ url: "/pages/user/person-info/index" });
     } else {
       this.fetUseriInfoHandle();
     }
@@ -239,7 +243,7 @@ Page({
     const versionInfo = wx.getAccountInfoSync();
     const { version, envVersion = __wxConfig } = versionInfo.miniProgram;
     this.setData({
-      versionNo: envVersion === 'release' ? version : envVersion,
+      versionNo: envVersion === "release" ? version : envVersion,
     });
   },
 });

@@ -1,13 +1,13 @@
-import Toast from 'tdesign-miniprogram/toast/index';
-import { fetchPromotion } from '../../../services/promotion/detail';
+import Toast from "tdesign-miniprogram/toast/index";
+import { fetchPromotion } from "../../../services/promotion/detail";
 
 Page({
   data: {
     list: [],
-    banner: '',
+    banner: "",
     time: 0,
     showBannerDesc: false,
-    statusTag: '',
+    statusTag: "",
   },
 
   onLoad(query) {
@@ -16,40 +16,44 @@ Page({
   },
 
   getGoodsList(promotionID) {
-    fetchPromotion(promotionID).then(({ list, banner, time, showBannerDesc, statusTag }) => {
-      const goods = list.map((item) => ({
-        ...item,
-        tags: item.tags.map((v) => v.title),
-      }));
-      this.setData({
-        list: goods,
-        banner,
-        time,
-        showBannerDesc,
-        statusTag,
-      });
-    });
+    fetchPromotion(promotionID).then(
+      ({ list, banner, time, showBannerDesc, statusTag }) => {
+        const goods = list.map((item) => ({
+          ...item,
+          tags: item.tags.map((v) => v.title),
+        }));
+        this.setData({
+          list: goods,
+          banner,
+          time,
+          showBannerDesc,
+          statusTag,
+        });
+      }
+    );
   },
 
   goodClickHandle(e) {
     const { index } = e.detail;
-    const { spuId } = this.data.list[index];
-    wx.navigateTo({ url: `/pages/goods/details/index?spuId=${spuId}` });
+    const { spuId, productId } = this.data.list[index];
+    wx.navigateTo({
+      url: `/pages/goods/details/index?spuId=${spuId}&productId=${productId}`,
+    });
   },
 
   cardClickHandle() {
     Toast({
       context: this,
-      selector: '#t-toast',
-      message: '点击加购',
+      selector: "#t-toast",
+      message: "点击加购",
     });
   },
 
   bannerClickHandle() {
     Toast({
       context: this,
-      selector: '#t-toast',
-      message: '点击规则详情',
+      selector: "#t-toast",
+      message: "点击规则详情",
     });
   },
 });

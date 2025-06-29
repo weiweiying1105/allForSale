@@ -1,25 +1,25 @@
 /* eslint-disable no-param-reassign */
-import { getSearchResult } from '../../../services/good/fetchSearchResult';
-import Toast from 'tdesign-miniprogram/toast/index';
+import { getSearchResult } from "../../../services/good/fetchSearchResult";
+import Toast from "tdesign-miniprogram/toast/index";
 
 const initFilters = {
   overall: 1,
-  sorts: '',
+  sorts: "",
 };
 
 Page({
   data: {
     goodsList: [],
-    sorts: '',
+    sorts: "",
     overall: 1,
     show: false,
-    minVal: '',
-    maxVal: '',
+    minVal: "",
+    maxVal: "",
     minSalePriceFocus: false,
     maxSalePriceFocus: false,
     filter: initFilters,
     hasLoaded: false,
-    keywords: '',
+    keywords: "",
     loadMoreStatus: 0,
     loading: true,
   },
@@ -29,14 +29,14 @@ Page({
   pageSize: 30,
 
   onLoad(options) {
-    const { searchValue = '' } = options || {};
+    const { searchValue = "" } = options || {};
     this.setData(
       {
         keywords: searchValue,
       },
       () => {
         this.init(true);
-      },
+      }
     );
   },
 
@@ -53,7 +53,7 @@ Page({
 
     if (sorts) {
       params.sort = 1;
-      params.sortType = sorts === 'desc' ? 1 : 0;
+      params.sortType = sorts === "desc" ? 1 : 0;
     }
     if (overall) {
       params.sort = 0;
@@ -80,15 +80,15 @@ Page({
     });
     try {
       const result = await getSearchResult(params);
-      const code = 'Success';
+      const code = "Success";
       const data = result;
-      if (code.toUpperCase() === 'SUCCESS') {
+      if (code.toUpperCase() === "SUCCESS") {
         const { spuList, totalCount = 0 } = data;
         if (totalCount === 0 && reset) {
           this.total = totalCount;
           this.setData({
             emptyInfo: {
-              tip: '抱歉，未找到相关商品',
+              tip: "抱歉，未找到相关商品",
             },
             hasLoaded: true,
             loadMoreStatus: 0,
@@ -115,7 +115,7 @@ Page({
           loading: false,
         });
         wx.showToast({
-          title: '查询失败，请稍候重试',
+          title: "查询失败，请稍候重试",
         });
       }
     } catch (error) {
@@ -131,7 +131,7 @@ Page({
 
   handleCartTap() {
     wx.switchTab({
-      url: '/pages/cart/index',
+      url: "/pages/cart/index",
     });
   },
 
@@ -143,7 +143,7 @@ Page({
       },
       () => {
         this.init(true);
-      },
+      }
     );
   },
 
@@ -162,16 +162,16 @@ Page({
   handleAddCart() {
     Toast({
       context: this,
-      selector: '#t-toast',
-      message: '点击加购',
+      selector: "#t-toast",
+      message: "点击加购",
     });
   },
 
   gotoGoodsDetail(e) {
     const { index } = e.detail;
-    const { spuId } = this.data.goodsList[index];
+    const { spuId, productId } = this.data.goodsList[index];
     wx.navigateTo({
-      url: `/pages/goods/details/index?spuId=${spuId}`,
+      url: `/pages/goods/details/index?spuId=${spuId}&productId=${productId}`,
     });
   },
 
@@ -196,7 +196,7 @@ Page({
       },
       () => {
         total && this.init(true);
-      },
+      }
     );
   },
 
@@ -223,12 +223,12 @@ Page({
   },
 
   reset() {
-    this.setData({ minVal: '', maxVal: '' });
+    this.setData({ minVal: "", maxVal: "" });
   },
 
   confirm() {
     const { minVal, maxVal } = this.data;
-    let message = '';
+    let message = "";
     if (minVal && !maxVal) {
       message = `价格最小是${minVal}`;
     } else if (!minVal && maxVal) {
@@ -236,12 +236,12 @@ Page({
     } else if (minVal && maxVal && minVal <= maxVal) {
       message = `价格范围${minVal}-${this.data.maxVal}`;
     } else {
-      message = '请输入正确范围';
+      message = "请输入正确范围";
     }
     if (message) {
       Toast({
         context: this,
-        selector: '#t-toast',
+        selector: "#t-toast",
         message,
       });
     }
@@ -249,14 +249,14 @@ Page({
     this.setData(
       {
         show: false,
-        minVal: '',
+        minVal: "",
         goodsList: [],
         loadMoreStatus: 0,
-        maxVal: '',
+        maxVal: "",
       },
       () => {
         this.init();
-      },
+      }
     );
   },
 });

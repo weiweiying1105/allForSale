@@ -1,8 +1,11 @@
-import { formatTime } from '../../../utils/util';
-import { OrderStatus, LogisticsIconMap } from '../config';
-import { fetchBusinessTime, fetchOrderDetail } from '../../../services/order/orderDetail';
-import Toast from 'tdesign-miniprogram/toast/index';
-import { getAddressPromise } from '../../../services/address/list';
+import { formatTime } from "../../../utils/util";
+import { OrderStatus, LogisticsIconMap } from "../config";
+import {
+  fetchBusinessTime,
+  fetchOrderDetail,
+} from "../../../services/order/orderDetail";
+import Toast from "tdesign-miniprogram/toast/index";
+import { getAddressPromise } from "../../../services/address/list";
 
 Page({
   data: {
@@ -13,7 +16,7 @@ Page({
     countDownTime: null,
     addressEditable: false,
     backRefresh: false, // 用于接收其他页面back时的状态
-    formatCreateTime: '', //格式化订单创建时间
+    formatCreateTime: "", //格式化订单创建时间
     logisticsNodes: [],
     /** 订单评论状态 */
     orderHasCommented: true,
@@ -22,8 +25,8 @@ Page({
   onLoad(query) {
     this.orderNo = query.orderNo;
     this.init();
-    this.navbar = this.selectComponent('#navbar');
-    this.pullDownRefresh = this.selectComponent('#wr-pull-down-refresh');
+    this.navbar = this.selectComponent("#navbar");
+    this.pullDownRefresh = this.selectComponent("#wr-pull-down-refresh");
   },
 
   onShow() {
@@ -39,7 +42,7 @@ Page({
 
   onImgError(e) {
     if (e.detail) {
-      console.error('img 加载失败');
+      console.error("img 加载失败");
     }
   },
 
@@ -102,7 +105,7 @@ Page({
             num: goods.buyQuantity,
             titlePrefixTags: goods.tagText ? [{ text: goods.tagText }] : [],
             buttons: goods.buttonVOs || [],
-          }),
+          })
         ),
         buttons: order.buttonVOs || [],
         createTime: order.createTime,
@@ -112,15 +115,20 @@ Page({
       this.setData({
         order,
         _order,
-        formatCreateTime: formatTime(parseFloat(`${order.createTime}`), 'YYYY-MM-DD HH:mm'), // 格式化订单创建时间
+        formatCreateTime: formatTime(
+          parseFloat(`${order.createTime}`),
+          "YYYY-MM-DD HH:mm"
+        ), // 格式化订单创建时间
         countDownTime: this.computeCountDownTime(order),
         addressEditable:
-          [OrderStatus.PENDING_PAYMENT, OrderStatus.PENDING_DELIVERY].includes(order.orderStatus) &&
-          order.orderSubStatus !== -1, // 订单正在取消审核时不允许修改地址（但是返回的状态码与待发货一致）
+          [OrderStatus.PENDING_PAYMENT, OrderStatus.PENDING_DELIVERY].includes(
+            order.orderStatus
+          ) && order.orderSubStatus !== -1, // 订单正在取消审核时不允许修改地址（但是返回的状态码与待发货一致）
         isPaid: !!order.paymentVO.paySuccessTime,
         invoiceStatus: this.datermineInvoiceStatus(order),
         invoiceDesc: order.invoiceDesc,
-        invoiceType: order.invoiceVO?.invoiceType === 5 ? '电子普通发票' : '不开发票', //是否开票 0-不开 5-电子发票
+        invoiceType:
+          order.invoiceVO?.invoiceType === 5 ? "电子普通发票" : "不开发票", //是否开票 0-不开 5-电子发票
         logisticsNodes: this.flattenNodes(order.trajectoryVos || []),
       });
     });
@@ -131,10 +139,10 @@ Page({
     return (nodes || []).reduce((res, node) => {
       return (node.nodes || []).reduce((res1, subNode, index) => {
         res1.push({
-          title: index === 0 ? node.title : '', // 子节点中仅第一个显示title
+          title: index === 0 ? node.title : "", // 子节点中仅第一个显示title
           desc: subNode.status,
-          date: formatTime(+subNode.timestamp, 'YYYY-MM-DD HH:mm:ss'),
-          icon: index === 0 ? LogisticsIconMap[node.code] || '' : '', // 子节点中仅第一个显示icon
+          date: formatTime(+subNode.timestamp, "YYYY-MM-DD HH:mm:ss"),
+          icon: index === 0 ? LogisticsIconMap[node.code] || "" : "", // 子节点中仅第一个显示icon
         });
         return res1;
       }, res);
@@ -159,14 +167,14 @@ Page({
       order.logisticsVO.receiverAddress,
     ]
       .filter((s) => !!s)
-      .join(' ');
+      .join(" ");
   },
 
   getStoreDetail() {
     fetchBusinessTime().then((res) => {
       const storeDetail = {
         storeTel: res.data.telphone,
-        storeBusiness: res.data.businessTime.join('\n'),
+        storeBusiness: res.data.businessTime.join("\n"),
       };
       this.setData({ storeDetail });
     });
@@ -176,13 +184,18 @@ Page({
   // 返回时间若是大于2020.01.01，说明返回的是关闭时间，否则说明返回的直接就是剩余时间
   computeCountDownTime(order) {
     if (order.orderStatus !== OrderStatus.PENDING_PAYMENT) return null;
-    return order.autoCancelTime > 1577808000000 ? order.autoCancelTime - Date.now() : order.autoCancelTime;
+    return order.autoCancelTime > 1577808000000
+      ? order.autoCancelTime - Date.now()
+      : order.autoCancelTime;
   },
 
   onCountDownFinish() {
     //this.setData({ countDownTime: -1 });
     const { countDownTime, order } = this.data;
-    if (countDownTime > 0 || (order && order.groupInfoVo && order.groupInfoVo.residueTime > 0)) {
+    if (
+      countDownTime > 0 ||
+      (order && order.groupInfoVo && order.groupInfoVo.residueTime > 0)
+    ) {
       this.onRefresh();
     }
   },
@@ -190,16 +203,18 @@ Page({
   onGoodsCardTap(e) {
     const { index } = e.currentTarget.dataset;
     const goods = this.data.order.orderItemVOs[index];
-    wx.navigateTo({ url: `/pages/goods/details/index?spuId=${goods.spuId}` });
+    wx.navigateTo({
+      url: `/pages/goods/details/index?spuId=${goods.spuId}&productId=${goods.productId}`,
+    });
   },
 
   onEditAddressTap() {
     getAddressPromise()
       .then((address) => {
         this.setData({
-          'order.logisticsVO.receiverName': address.name,
-          'order.logisticsVO.receiverPhone': address.phone,
-          '_order.receiverAddress': address.address,
+          "order.logisticsVO.receiverName": address.name,
+          "order.logisticsVO.receiverPhone": address.phone,
+          "_order.receiverAddress": address.address,
         });
       })
       .catch(() => {});
@@ -241,7 +256,9 @@ Page({
       phoneNumber: this.data.order.logisticsVO.logisticsCompanyTel,
     };
     wx.navigateTo({
-      url: `/pages/order/delivery-detail/index?data=${encodeURIComponent(JSON.stringify(logisticsData))}`,
+      url: `/pages/order/delivery-detail/index?data=${encodeURIComponent(
+        JSON.stringify(logisticsData)
+      )}`,
     });
   },
 
@@ -254,14 +271,14 @@ Page({
 
   /** 跳转拼团详情/分享页*/
   toGrouponDetail() {
-    wx.showToast({ title: '点击了拼团' });
+    wx.showToast({ title: "点击了拼团" });
   },
 
   clickService() {
     Toast({
       context: this,
-      selector: '#t-toast',
-      message: '您点击了联系客服',
+      selector: "#t-toast",
+      message: "您点击了联系客服",
     });
   },
 

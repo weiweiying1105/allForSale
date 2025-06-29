@@ -36,7 +36,7 @@
         </view>
       </view>
       <view class="goods-title">
-        <view class="goods-name">{{details.title}}</view>
+        <view class="goods-name">{{details.name}}</view>
         <view class="goods-tag">
           <t-button open-type="share" t-class="shareBtn" variant="text">
             <view class="btn-icon">
@@ -87,12 +87,12 @@
     </view>
   </view>
   <view class="desc-content">
-    <view class="desc-content__title" wx:if="{{details.desc.length > 0}}">
+    <view class="desc-content__title" wx:if="{{details.description.length > 0}}">
       <t-image t-class="img" src="{{recLeftImg}}" />
       <span class="desc-content__title--text">详情介绍</span>
       <t-image t-class="img" src="{{recRightImg}}" />
     </view>
-    <view wx:if="{{details.desc.length > 0}}" wx:for="{{details.desc}}" wx:key="index">
+    <view wx:if="{{details.description.length > 0}}" wx:for="{{details.description}}" wx:key="index">
       <t-image t-class="desc-content__img" src="{{item}}" mode="widthFix" />
     </view>
   </view>
@@ -112,7 +112,7 @@
   <goods-specs-popup
     id="goodsSpecsPopup"
     show="{{isSpuSelectPopupShow}}"
-    title="{{details.title || ''}}"
+    title="{{details.name || ''}}"
     src="{{specImg ? specImg : primaryImage}}"
     specList="{{details.specList || []}}"
     skuList="{{skuArray}}"

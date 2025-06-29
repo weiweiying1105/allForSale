@@ -13,10 +13,10 @@
         <!-- 已选规格 -->
         <view class="popup-sku__selected-spec">
           <view>选择：</view>
-          <view wx:for="{{specList}}" wx:key="specId">
+          <view wx:for="{{specList}}" wx:key="id">
             <view
               class="popup-sku__selected-item"
-              wx:for="{{item.specValueList}}"
+              wx:for="{{item.values}}"
               wx:for-item="selectedItem"
               wx:if="{{selectedItem.isSelected}}"
               wx:key="specValueId"
@@ -27,25 +27,27 @@
         </view>
       </view>
     </view>
+     {{specList.length}}
     <view class="popup-sku-body">
       <view class="popup-sku-group-container">
-        <view class="popup-sku-row" wx:for="{{specList}}" wx:key="specId">
-          <view class="popup-sku-row__title">{{item.title}}</view>
+       
+        <view class="popup-sku-row" wx:for="{{specList}}" wx:key="id">
+          <view class="popup-sku-row__title">{{item.name}}</view>
           <block
-            wx:for="{{item.specValueList}}"
+            wx:for="{{item.values}}"
             wx:for-item="valuesItem"
             wx:for-index="valuesIndex"
             wx:key="specValueId"
           >
             <view
               class="popup-sku-row__item {{valuesItem.isSelected ? 'popup-sku-row__item--active' : ''}} {{!valuesItem.hasStockObj.hasStock || !isStock ? 'disabled-sku-selected' : ''}}"
-              data-specid="{{item.specId}}"
-              data-id="{{valuesItem.specValueId}}"
-              data-val="{{valuesItem.specValue}}"
+              data-id="{{item.id}}"
+              data-id="{{valuesItem.id}}"
+              data-val="{{valuesItem.value}}"
               data-hasStock="{{valuesItem.hasStockObj.hasStock}}"
               bindtap="toChooseItem"
             >
-              {{valuesItem.specValue}}
+              {{valuesItem.value}}
             </view>
           </block>
         </view>

@@ -1,6 +1,6 @@
-import { fetchHome } from '../../services/home/home';
-import { fetchGoodsList } from '../../services/good/fetchGoods';
-import Toast from 'tdesign-miniprogram/toast/index';
+import { fetchHome } from "../../services/home/home";
+import { fetchGoodsList } from "../../services/good/fetchGoods";
+import Toast from "tdesign-miniprogram/toast/index";
 
 Page({
   data: {
@@ -11,10 +11,10 @@ Page({
     pageLoading: false,
     current: 1,
     autoplay: true,
-    duration: '500',
+    duration: "500",
     interval: 5000,
-    navigation: { type: 'dots' },
-    swiperImageProps: { mode: 'scaleToFill' },
+    navigation: { type: "dots" },
+    swiperImageProps: { mode: "scaleToFill" },
   },
 
   goodListPagination: {
@@ -83,7 +83,8 @@ Page({
     this.setData({ goodsListLoadStatus: 1 });
 
     const pageSize = this.goodListPagination.num;
-    let pageIndex = this.privateData.tabIndex * pageSize + this.goodListPagination.index + 1;
+    let pageIndex =
+      this.privateData.tabIndex * pageSize + this.goodListPagination.index + 1;
     if (fresh) {
       pageIndex = 0;
     }
@@ -104,22 +105,22 @@ Page({
 
   goodListClickHandle(e) {
     const { index } = e.detail;
-    const { spuId } = this.data.goodsList[index];
+    const { spuId, productId } = this.data.goodsList[index];
     wx.navigateTo({
-      url: `/pages/goods/details/index?spuId=${spuId}`,
+      url: `/pages/goods/details/index?spuId=${spuId}&productId=${productId}`,
     });
   },
 
   goodListAddCartHandle() {
     Toast({
       context: this,
-      selector: '#t-toast',
-      message: '点击加入购物车',
+      selector: "#t-toast",
+      message: "点击加入购物车",
     });
   },
 
   navToSearchPage() {
-    wx.navigateTo({ url: '/pages/goods/search/index' });
+    wx.navigateTo({ url: "/pages/goods/search/index" });
   },
 
   navToActivityDetail({ detail }) {

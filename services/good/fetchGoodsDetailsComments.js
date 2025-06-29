@@ -1,11 +1,11 @@
-import { config } from '../../config/index';
+import { config } from "../../config/index";
 
 /** 获取商品详情页评论数 */
 function mockFetchGoodDetailsCommentsCount(spuId = 0) {
-  const { delay } = require('../_utils/delay');
+  const { delay } = require("../_utils/delay");
   const {
     getGoodsDetailsCommentsCount,
-  } = require('../../model/detailsComments');
+  } = require("../../model/detailsComments");
   return delay().then(() => getGoodsDetailsCommentsCount(spuId));
 }
 
@@ -15,23 +15,25 @@ export function getGoodsDetailsCommentsCount(spuId = 0) {
     return mockFetchGoodDetailsCommentsCount(spuId);
   }
   return new Promise((resolve) => {
-    resolve('real api');
+    resolve("real api");
   });
 }
 
 /** 获取商品详情页评论 */
 function mockFetchGoodDetailsCommentList(spuId = 0) {
-  const { delay } = require('../_utils/delay');
-  const { getGoodsDetailsComments } = require('../../model/detailsComments');
+  const { delay } = require("../_utils/delay");
+  const { getGoodsDetailsComments } = require("../../model/detailsComments");
   return delay().then(() => getGoodsDetailsComments(spuId));
 }
 
 /** 获取商品详情页评论 */
 export function getGoodsDetailsCommentList(spuId = 0) {
-  if (config.useMock) {
-    return mockFetchGoodDetailsCommentList(spuId);
-  }
+  // if (config.useMock) {
+  //   return mockFetchGoodDetailsCommentList(spuId);
+  // }
   return new Promise((resolve) => {
-    resolve('real api');
+    resolve({
+      homePageComments: [],
+    });
   });
 }

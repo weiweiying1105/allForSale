@@ -9,6 +9,27 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/goods/details/index",
+          "pathName": "pages/goods/details/index",
+          "query": "spuId=undefined&productId=1",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/goods/list/index",
+          "pathName": "pages/goods/list/index",
+          "query": "categoryId=9",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/category/index",
+          "pathName": "pages/category/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "pages/promotion/promotion-detail/index",
           "pathName": "pages/promotion/promotion-detail/index",
           "query": "",

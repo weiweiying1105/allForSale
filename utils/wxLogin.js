@@ -7,19 +7,19 @@ export function wxLogin() {
         if (res.code) {
           // 这里可以调用后端接口换取openid
           // 假设直接返回code作为openid示例
-          post('/wxLogin', { code: res.code }).then((res) => {
-            console.log('wxLogin',res);
-            wx.setStorageSync('openid', res.openid);
+          post("/wxLogin", { code: res.code }).then((res) => {
+            console.log("wxLogin", res.data.data.openid);
+            wx.setStorageSync("openid", res.data.data.openid);
             resolve(res.openid);
-          })
+          });
           resolve(res.code);
         } else {
-          reject(new Error('登录失败，无法获取code'));
+          reject(new Error("登录失败，无法获取code"));
         }
       },
       fail: (err) => {
         reject(err);
-      }
+      },
     });
   });
 }

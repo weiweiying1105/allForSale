@@ -24,7 +24,11 @@
     ]
   },
   "dependencies": {
+    "@cloudinary/url-gen": "^1.21.0",
+    "cloudinary-core": "^2.13.1",
     "dayjs": "^1.9.3",
+    "lodash": "^4.17.21",
+    "lodash.assign": "^4.2.0",
     "tdesign-miniprogram": "1.9.5",
     "tslib": "^1.11.1"
   },

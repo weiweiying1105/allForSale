@@ -1,12 +1,12 @@
-import Toast from 'tdesign-miniprogram/toast/index';
-import { fetchGood } from '../../../services/good/fetchGood';
-import { fetchActivityList } from '../../../services/activity/fetchActivityList';
+import Toast from "tdesign-miniprogram/toast/index";
+import { fetchGood } from "../../../services/good/fetchGood";
+import { fetchActivityList } from "../../../services/activity/fetchActivityList";
 import {
   getGoodsDetailsCommentList,
   getGoodsDetailsCommentsCount,
-} from '../../../services/good/fetchGoodsDetailsComments';
+} from "../../../services/good/fetchGoodsDetailsComments";
 
-import { cdnBase } from '../../../config/index';
+import { cdnBase } from "../../../config/index";
 
 const imgPrefix = `${cdnBase}/`;
 
@@ -14,13 +14,16 @@ const recLeftImg = `${imgPrefix}common/rec-left.png`;
 const recRightImg = `${imgPrefix}common/rec-right.png`;
 const obj2Params = (obj = {}, encode = false) => {
   const result = [];
-  Object.keys(obj).forEach((key) => result.push(`${key}=${encode ? encodeURIComponent(obj[key]) : obj[key]}`));
+  Object.keys(obj).forEach((key) =>
+    result.push(`${key}=${encode ? encodeURIComponent(obj[key]) : obj[key]}`)
+  );
 
-  return result.join('&');
+  return result.join("&");
 };
 
 Page({
   data: {
+    productId: "",
     commentsList: [],
     commentsStatistics: {
       badCount: 0,
@@ -37,26 +40,26 @@ Page({
     details: {},
     goodsTabArray: [
       {
-        name: '商品',
-        value: '', // 空字符串代表置顶
+        name: "商品",
+        value: "", // 空字符串代表置顶
       },
       {
-        name: '详情',
-        value: 'goods-page',
+        name: "详情",
+        value: "goods-page",
       },
     ],
     storeLogo: `${imgPrefix}common/store-logo.png`,
-    storeName: '云mall标准版旗舰店',
+    storeName: "云mall标准版旗舰店",
     jumpArray: [
       {
-        title: '首页',
-        url: '/pages/home/home',
-        iconName: 'home',
+        title: "首页",
+        url: "/pages/home/home",
+        iconName: "home",
       },
       {
-        title: '购物车',
-        url: '/pages/cart/index',
-        iconName: 'cart',
+        title: "购物车",
+        url: "/pages/cart/index",
+        iconName: "cart",
         showCartNum: true,
       },
     ],
@@ -65,10 +68,10 @@ Page({
     soldout: false,
     buttonType: 1,
     buyNum: 1,
-    selectedAttrStr: '',
+    selectedAttrStr: "",
     skuArray: [],
-    primaryImage: '',
-    specImg: '',
+    primaryImage: "",
+    specImg: "",
     isSpuSelectPopupShow: false,
     isAllSelectedSku: false,
     buyType: 0,
@@ -79,8 +82,8 @@ Page({
     minSalePrice: 0,
     maxSalePrice: 0,
     list: [],
-    spuId: '',
-    navigation: { type: 'fraction' },
+    spuId: "",
+    navigation: { type: "fraction" },
     current: 0,
     autoplay: true,
     duration: 500,
@@ -127,7 +130,7 @@ Page({
   },
 
   onPageScroll({ scrollTop }) {
-    const goodsTab = this.selectComponent('#goodsTab');
+    const goodsTab = this.selectComponent("#goodsTab");
     goodsTab && goodsTab.onScroll(scrollTop);
   },
 
@@ -156,13 +159,16 @@ Page({
     const skuItem = skuArray.filter((item) => {
       let status = true;
       (item.specInfo || []).forEach((subItem) => {
-        if (!selectedSku[subItem.specId] || selectedSku[subItem.specId] !== subItem.specValueId) {
+        if (
+          !selectedSku[subItem.specId] ||
+          selectedSku[subItem.specId] !== subItem.specValueId
+        ) {
           status = false;
         }
       });
       if (status) return item;
     });
-    this.selectSpecsName(selectedSkuValues.length > 0 ? selectedAttrStr : '');
+    this.selectSpecsName(selectedSkuValues.length > 0 ? selectedAttrStr : "");
     if (skuItem) {
       this.setData({
         selectItem: skuItem,
@@ -177,6 +183,7 @@ Page({
     this.setData({
       specImg: skuItem && skuItem.skuImage ? skuItem.skuImage : primaryImage,
     });
+    console.log("skuArray", skuArray);
   },
 
   // 获取已选择的sku名称
@@ -185,7 +192,7 @@ Page({
     return Object.keys(selectedSku).reduce((selectedValues, skuKeyStr) => {
       const skuValues = normalizedTree[skuKeyStr];
       const skuValueId = selectedSku[skuKeyStr];
-      if (skuValueId !== '') {
+      if (skuValueId !== "") {
         const skuValue = skuValues.filter((value) => {
           return value.specValueId === skuValueId;
         })[0];
@@ -210,7 +217,7 @@ Page({
       });
     } else {
       this.setData({
-        selectedAttrStr: '',
+        selectedAttrStr: "",
       });
     }
   },
@@ -219,9 +226,9 @@ Page({
     const { isAllSelectedSku } = this.data;
     Toast({
       context: this,
-      selector: '#t-toast',
-      message: isAllSelectedSku ? '点击加入购物车' : '请选择规格',
-      icon: '',
+      selector: "#t-toast",
+      message: isAllSelectedSku ? "点击加入购物车" : "请选择规格",
+      icon: "",
       duration: 1000,
     });
   },
@@ -231,9 +238,9 @@ Page({
     if (!isAllSelectedSku) {
       Toast({
         context: this,
-        selector: '#t-toast',
-        message: '请选择规格',
-        icon: '',
+        selector: "#t-toast",
+        message: "请选择规格",
+        icon: "",
         duration: 1000,
       });
       return;
@@ -241,10 +248,10 @@ Page({
     this.handlePopupHide();
     const query = {
       quantity: buyNum,
-      storeId: '1',
+      storeId: "1",
       spuId: this.data.spuId,
       goodsName: this.data.details.title,
-      skuId: type === 1 ? this.data.skuList[0].skuId : this.data.selectItem.skuId,
+      skuId: type === 1 ? this.data.skus[0].skuId : this.data.selectItem.skuId,
       available: this.data.details.available,
       price: this.data.details.minSalePrice,
       specInfo: this.data.details.specList?.map((item) => ({
@@ -259,7 +266,7 @@ Page({
     let urlQueryStr = obj2Params({
       goodsRequestList: JSON.stringify([query]),
     });
-    urlQueryStr = urlQueryStr ? `?${urlQueryStr}` : '';
+    urlQueryStr = urlQueryStr ? `?${urlQueryStr}` : "";
     const path = `/pages/order/order-confirm/index${urlQueryStr}`;
     wx.navigateTo({
       url: path,
@@ -301,12 +308,22 @@ Page({
     });
   },
 
-  getDetail(spuId) {
-    Promise.all([fetchGood(spuId), fetchActivityList()]).then((res) => {
+  getDetail(productId) {
+    Promise.all([fetchGood(productId), fetchActivityList()]).then((res) => {
       const [details, activityList] = res;
+      console.log(details, activityList);
       const skuArray = [];
-      const { skuList, primaryImage, isPutOnSale, minSalePrice, maxSalePrice, maxLinePrice, soldNum } = details;
-      skuList.forEach((item) => {
+      const {
+        skus,
+        primaryImage,
+        isPutOnSale,
+        minSalePrice,
+        maxSalePrice,
+        maxLinePrice,
+        soldNum,
+      } = details;
+
+      skus.forEach((item) => {
         skuArray.push({
           skuId: item.skuId,
           quantity: item.stockInfo ? item.stockInfo.stockQuantity : 0,
@@ -314,12 +331,13 @@ Page({
         });
       });
       const promotionArray = [];
-      activityList.forEach((item) => {
-        promotionArray.push({
-          tag: item.promotionSubCode === 'MYJ' ? '满减' : '满折',
-          label: '满100元减99.9元',
+      !!(activityList && activityList?.length) &&
+        activityList?.forEach((item) => {
+          promotionArray.push({
+            tag: item.promotionSubCode === "MYJ" ? "满减" : "满折",
+            label: "满100元减99.9元",
+          });
         });
-      });
       this.setData({
         details,
         activityList,
@@ -333,39 +351,42 @@ Page({
         soldout: isPutOnSale === 0,
         soldNum,
       });
+      console.log("details", details);
     });
   },
 
   async getCommentsList() {
     try {
-      const code = 'Success';
+      const code = "Success";
       const data = await getGoodsDetailsCommentList();
       const { homePageComments } = data;
-      if (code.toUpperCase() === 'SUCCESS') {
+      if (code.toUpperCase() === "SUCCESS") {
         const nextState = {
           commentsList: homePageComments.map((item) => {
             return {
               goodsSpu: item.spuId,
-              userName: item.userName || '',
+              userName: item.userName || "",
               commentScore: item.commentScore,
-              commentContent: item.commentContent || '用户未填写评价',
-              userHeadUrl: item.isAnonymity ? this.anonymityAvatar : item.userHeadUrl || this.anonymityAvatar,
+              commentContent: item.commentContent || "用户未填写评价",
+              userHeadUrl: item.isAnonymity
+                ? this.anonymityAvatar
+                : item.userHeadUrl || this.anonymityAvatar,
             };
           }),
         };
         this.setData(nextState);
       }
     } catch (error) {
-      console.error('comments error:', error);
+      console.error("comments error:", error);
     }
   },
 
   onShareAppMessage() {
     // 自定义的返回信息
     const { selectedAttrStr } = this.data;
-    let shareSubTitle = '';
-    if (selectedAttrStr.indexOf('件') > -1) {
-      const count = selectedAttrStr.indexOf('件');
+    let shareSubTitle = "";
+    if (selectedAttrStr.indexOf("件") > -1) {
+      const count = selectedAttrStr.indexOf("件");
       shareSubTitle = selectedAttrStr.slice(count + 1, selectedAttrStr.length);
     }
     const customInfo = {
@@ -379,10 +400,17 @@ Page({
   /** 获取评价统计 */
   async getCommentsStatistics() {
     try {
-      const code = 'Success';
+      const code = "Success";
       const data = await getGoodsDetailsCommentsCount();
-      if (code.toUpperCase() === 'SUCCESS') {
-        const { badCount, commentCount, goodCount, goodRate, hasImageCount, middleCount } = data;
+      if (code.toUpperCase() === "SUCCESS") {
+        const {
+          badCount,
+          commentCount,
+          goodCount,
+          goodRate,
+          hasImageCount,
+          middleCount,
+        } = data;
         const nextState = {
           commentsStatistics: {
             badCount: parseInt(`${badCount}`),
@@ -397,7 +425,7 @@ Page({
         this.setData(nextState);
       }
     } catch (error) {
-      console.error('comments statiistics error:', error);
+      console.error("comments statiistics error:", error);
     }
   },
 
@@ -409,12 +437,13 @@ Page({
   },
 
   onLoad(query) {
-    const { spuId } = query;
+    const { spuId, productId } = query;
     this.setData({
       spuId: spuId,
+      productId: productId,
     });
-    this.getDetail(spuId);
-    this.getCommentsList(spuId);
-    this.getCommentsStatistics(spuId);
+    this.getDetail(productId);
+    this.getCommentsList(productId);
+    this.getCommentsStatistics(productId);
   },
 });

@@ -6,15 +6,15 @@
  * @returns {Promise} 返回 Promise
  */
 
-const { baseUrl } = require('../config/index');
-function request({ url, data = {}, method = 'GET' }) {
+const { baseUrl } = require("../config/index");
+function request({ url, data = {}, method = "GET" }) {
   return new Promise((resolve, reject) => {
     wx.request({
-      url: baseUrl+url,
+      url: baseUrl + url,
       data: data,
-      headers:{
-        'content-type': 'application/json', // 默认值
-        "openid": wx.getStorageSync('openid')||'',
+      header: {
+        "content-type": "application/json", // 默认值
+        openid: wx.getStorageSync("openid") || "",
       },
       method: method,
       success: (res) => {
@@ -22,7 +22,7 @@ function request({ url, data = {}, method = 'GET' }) {
       },
       fail: (err) => {
         reject(err);
-      }
+      },
     });
   });
 }
@@ -34,7 +34,7 @@ function request({ url, data = {}, method = 'GET' }) {
  * @returns {Promise}
  */
 export function get(url, params = {}) {
-  return request({ url, data: params, method: 'GET' });
+  return request({ url, data: params, method: "GET" });
 }
 
 /**
@@ -44,12 +44,12 @@ export function get(url, params = {}) {
  * @returns {Promise}
  */
 export function post(url, data = {}) {
-  return request({ url, data, method: 'POST' });
+  return request({ url, data, method: "POST" });
 }
 
 /**
  * 示例：获取个人中心信息
  */
 export function fetchUserCenter() {
-  return get('https://URL');
+  return get("https://URL");
 }

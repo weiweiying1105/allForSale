@@ -142,7 +142,7 @@
 </view>
 <specs-popup
   show="{{isShowSpecs}}"
-  title="{{currentGoods.title || ''}}"
+  title="{{currentgoods.name || ''}}"
   price="{{currentGoods.price || ''}}"
   thumb="{{utils.imgCut(currentGoods.thumb, 180, 180)}}"
   specs="{{currentGoods.specs || []}}"

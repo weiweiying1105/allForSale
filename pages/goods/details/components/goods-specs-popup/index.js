@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
-import Toast from 'tdesign-miniprogram/toast/index';
+import Toast from "tdesign-miniprogram/toast/index";
 
 Component({
   options: {
@@ -19,7 +19,7 @@ Component({
     },
     limitBuyInfo: {
       type: String,
-      value: '',
+      value: "",
     },
     isStock: {
       type: Boolean,
@@ -85,17 +85,21 @@ Component({
     initData() {
       const { skuList } = this.properties;
       const { specList } = this.properties;
+
       specList.forEach((item) => {
-        if (item.specValueList.length > 0) {
-          item.specValueList.forEach((subItem) => {
-            const obj = this.checkSkuStockQuantity(subItem.specValueId, skuList);
+        if (item.values.length > 0) {
+          item.values.forEach((subItem) => {
+            const obj = this.checkSkuStockQuantity(
+              subItem.specValueId,
+              skuList
+            );
             subItem.hasStockObj = obj;
           });
         }
       });
       const selectedSku = {};
       specList.forEach((item) => {
-        selectedSku[item.specId] = '';
+        selectedSku[item.specId] = "";
       });
       this.setData({
         specList,
@@ -103,6 +107,7 @@ Component({
       this.selectSpecObj = {};
       this.selectedSku = {};
       this.initStatus = true;
+      console.log("initData", skuList, specList);
     },
 
     checkSkuStockQuantity(specValueId, skuList) {
@@ -141,9 +146,11 @@ Component({
       const itemSelectArray = [];
       specList.forEach((item) => {
         if (item.specId === specId) {
-          const subSpecValueItem = item.specValueList.find((subItem) => subItem.specValueId === specValueId);
+          const subSpecValueItem = item.values.find(
+            (subItem) => subItem.specValueId === specValueId
+          );
           let specSelectStatus = false;
-          item.specValueList.forEach((n) => {
+          item.values.forEach((n) => {
             itemAllSpecArray.push(n.hasStockObj.specsArray);
             if (n.isSelected) {
               specSelectStatus = true;
@@ -155,7 +162,9 @@ Component({
             }
           });
           if (specSelectStatus) {
-            selectSpecObj[specId] = this.flatten(subSpecValueItem?.hasStockObj.specsArray.concat(itemSelectArray));
+            selectSpecObj[specId] = this.flatten(
+              subSpecValueItem?.hasStockObj.specsArray.concat(itemSelectArray)
+            );
           } else {
             const subSet = function (arr1, arr2) {
               const set2 = new Set(arr2);
@@ -167,13 +176,16 @@ Component({
               });
               return subset;
             };
-            selectSpecObj[specId] = subSet(this.flatten(itemAllSpecArray), this.flatten(itemUnSelectArray));
+            selectSpecObj[specId] = subSet(
+              this.flatten(itemAllSpecArray),
+              this.flatten(itemUnSelectArray)
+            );
           }
         } else {
           // 未点击规格的逻辑
           const itemSelectArray = [];
           let specSelectStatus = false;
-          item.specValueList.map(
+          item.values.map(
             // 找到有库存的规格数组
             (n) => {
               itemSelectArray.push(n.hasStockObj.specsArray);
@@ -182,7 +194,7 @@ Component({
               }
               n.hasStockObj.hasStock = true;
               return n;
-            },
+            }
           );
           if (specSelectStatus) {
             selectSpecObj[item.specId] = this.flatten(itemSelectArray);
@@ -194,10 +206,12 @@ Component({
       });
       const combatArray = Object.values(selectSpecObj);
       if (combatArray.length > 0) {
-        const showArray = combatArray.reduce((x, y) => this.getIntersection(x, y));
+        const showArray = combatArray.reduce((x, y) =>
+          this.getIntersection(x, y)
+        );
         const lastResult = Array.from(new Set(showArray));
         specList.forEach((item) => {
-          item.specValueList.forEach((subItem) => {
+          item.values.forEach((subItem) => {
             if (lastResult.includes(subItem.specValueId)) {
               subItem.hasStockObj.hasStock = true;
             } else {
@@ -207,9 +221,12 @@ Component({
         });
       } else {
         specList.forEach((item) => {
-          if (item.specValueList.length > 0) {
-            item.specValueList.forEach((subItem) => {
-              const obj = this.checkSkuStockQuantity(subItem.specValueId, skuList);
+          if (item.values.length > 0) {
+            item.values.forEach((subItem) => {
+              const obj = this.checkSkuStockQuantity(
+                subItem.specValueId,
+                skuList
+              );
               subItem.hasStockObj = obj;
             });
           }
@@ -247,9 +264,9 @@ Component({
       if (!hasStock) {
         Toast({
           context: this,
-          selector: '#t-toast',
-          message: '该规格已售罄',
-          icon: '',
+          selector: "#t-toast",
+          message: "该规格已售罄",
+          icon: "",
           duration: 1000,
         });
         return;
@@ -258,11 +275,14 @@ Component({
       let { selectedSku } = this;
       const { specList } = this.properties;
       selectedSku =
-        selectedSku[specId] === id ? { ...this.selectedSku, [specId]: '' } : { ...this.selectedSku, [specId]: id };
+        selectedSku[specId] === id
+          ? { ...this.selectedSku, [specId]: "" }
+          : { ...this.selectedSku, [specId]: id };
       specList.forEach((item) => {
-        item.specValueList.forEach((valuesItem) => {
+        item.values.forEach((valuesItem) => {
           if (item.specId === specId) {
-            valuesItem.isSelected = valuesItem.specValueId === selectedSku[specId];
+            valuesItem.isSelected =
+              valuesItem.specValueId === selectedSku[specId];
           }
         });
       });
@@ -271,7 +291,7 @@ Component({
       if (!isAllSelectedSku) {
         this.setData({
           selectSkuSellsPrice: 0,
-          selectSkuImg: '',
+          selectSkuImg: "",
         });
       }
       this.setData({
@@ -279,7 +299,7 @@ Component({
         isAllSelectedSku,
       });
       this.selectedSku = selectedSku;
-      this.triggerEvent('change', {
+      this.triggerEvent("change", {
         specList,
         selectedSku,
         isAllSelectedSku,
@@ -288,12 +308,14 @@ Component({
 
     // 判断是否所有的sku都已经选中
     isAllSelected(skuTree, selectedSku) {
-      const selected = Object.keys(selectedSku).filter((skuKeyStr) => selectedSku[skuKeyStr] !== '');
+      const selected = Object.keys(selectedSku).filter(
+        (skuKeyStr) => selectedSku[skuKeyStr] !== ""
+      );
       return skuTree.length === selected.length;
     },
 
     handlePopupHide() {
-      this.triggerEvent('closeSpecsPopup', {
+      this.triggerEvent("closeSpecsPopup", {
         show: false,
       });
     },
@@ -301,20 +323,20 @@ Component({
     specsConfirm() {
       const { isStock } = this.properties;
       if (!isStock) return;
-      this.triggerEvent('specsConfirm');
+      this.triggerEvent("specsConfirm");
     },
 
     addCart() {
       const { isStock } = this.properties;
       if (!isStock) return;
-      this.triggerEvent('addCart');
+      this.triggerEvent("addCart");
     },
 
     buyNow() {
       const { isAllSelectedSku } = this.data;
       const { isStock } = this.properties;
       if (!isStock) return;
-      this.triggerEvent('buyNow', {
+      this.triggerEvent("buyNow", {
         isAllSelectedSku,
       });
     },
@@ -324,7 +346,7 @@ Component({
       this.setData({
         buyNum,
       });
-      this.triggerEvent('changeNum', {
+      this.triggerEvent("changeNum", {
         buyNum,
       });
     },

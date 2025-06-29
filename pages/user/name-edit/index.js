@@ -1,6 +1,8 @@
+const { post } = require("../../../utils/fetch");
+
 Page({
   data: {
-    nameValue: '',
+    nameValue: "",
   },
   onLoad(options) {
     const { name } = options;
@@ -8,12 +10,15 @@ Page({
       nameValue: name,
     });
   },
-  onSubmit() {
+  async onSubmit() {
+    await post("/updateUserInfo", {
+      nickName: this.data.nameValue,
+    });
     wx.navigateBack({ backRefresh: true });
   },
   clearContent() {
     this.setData({
-      nameValue: '',
+      nameValue: "",
     });
   },
 });

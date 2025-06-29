@@ -1,4 +1,5 @@
 <view class="person-info">
+
   <t-cell-group>
     <t-cell
       title="头像"

@@ -20,9 +20,9 @@
 
 		<view class="wr-goods-card__body">
 			<view class="wr-goods-card__long_content">
-				<view wx:if="{{ goods.title && !goods.hideKey.title }}" class="wr-goods-card__title title-class" style="-webkit-line-clamp: {{ goods.lineClamp }};">
+				<view wx:if="{{ goods.name && !goods.hideKey.title }}" class="wr-goods-card__title title-class" style="-webkit-line-clamp: {{ goods.lineClamp }};">
 					<slot name="before-title" />
-					{{ goods.title }}
+					{{ goods.name }}
 				</view>
 				<slot name="after-title" />
 				<view wx:if="{{ goods.desc && !goods.hideKey.desc }}" class="wr-goods-card__desc desc-class">{{ goods.desc }}</view>

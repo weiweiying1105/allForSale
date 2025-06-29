@@ -16,8 +16,8 @@
 		</view>
 		<view class="goods-card__body">
 			<view class="goods-card__upper">
-				<view wx:if="{{ goods.title }}" class="goods-card__title">
-					{{ goods.title }}
+				<view wx:if="{{ goods.name }}" class="goods-card__title">
+					{{ goods.name }}
 				</view>
 				<view wx:if="{{ goods.tags && !!goods.tags.length }}" class="goods-card__tags">
 					<view

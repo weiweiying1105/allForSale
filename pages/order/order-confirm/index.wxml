@@ -25,7 +25,7 @@
     >
       <t-image src="{{goods.thumb}}" t-class="goods-image" mode="aspectFill" />
       <view class="goods-content">
-        <view class="goods-title">{{goods.title}}</view>
+        <view class="goods-title">{{goods.name}}</view>
         <view>{{goods.specs}}</view>
       </view>
       <view class="goods-right">

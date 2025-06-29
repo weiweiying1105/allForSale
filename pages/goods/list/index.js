@@ -1,21 +1,22 @@
-import { fetchGoodsList } from '../../../services/good/fetchGoodsList';
-import Toast from 'tdesign-miniprogram/toast/index';
+import { fetchGoodsList } from "../../../services/good/fetchGoodsList";
+import Toast from "tdesign-miniprogram/toast/index";
 
 const initFilters = {
   overall: 1,
-  sorts: '',
+  sorts: "",
   layout: 0,
 };
 
 Page({
+  query: {},
   data: {
     goodsList: [],
     layout: 0,
-    sorts: '',
+    sorts: "",
     overall: 1,
     show: false,
-    minVal: '',
-    maxVal: '',
+    minVal: "",
+    maxVal: "",
     filter: initFilters,
     hasLoaded: false,
     loadMoreStatus: 0,
@@ -37,8 +38,9 @@ Page({
     });
     this.init(true);
   },
-
+  // 根据筛选条件查询产品
   generalQueryData(reset = false) {
+    // console.log("generalQueryData", reset);
     const { filter, keywords, minVal, maxVal } = this.data;
     const { pageNum, pageSize } = this;
     const { sorts, overall } = filter;
@@ -50,8 +52,9 @@ Page({
     };
 
     if (sorts) {
+      // 排序
       params.sort = 1;
-      params.sortType = sorts === 'desc' ? 1 : 0;
+      params.sortType = sorts === "desc" ? 1 : 0;
     }
 
     if (overall) {
@@ -78,21 +81,22 @@ Page({
       loading: true,
     });
     try {
-      const result = await fetchGoodsList(params);
-      const code = 'Success';
+      const result = await fetchGoodsList({ ...this.params });
+      console.log(result);
+      const code = "Success";
       const data = result;
-      if (code.toUpperCase() === 'SUCCESS') {
-        const { spuList, totalCount = 0 } = data;
+      if (code.toUpperCase() === "SUCCESS") {
+        const { spuList, totalCount = 0, data: _List } = data;
         if (totalCount === 0 && reset) {
           this.total = totalCount;
           this.setData({
             emptyInfo: {
-              tip: '抱歉，未找到相关商品',
+              tip: "抱歉，未找到相关商品",
             },
             hasLoaded: true,
             loadMoreStatus: 0,
             loading: false,
-            goodsList: [],
+            goodsList: _List,
           });
           return;
         }
@@ -105,12 +109,13 @@ Page({
           goodsList: _goodsList,
           loadMoreStatus: _loadMoreStatus,
         });
+        console.log("goodsList", this.data.goodsList);
       } else {
         this.setData({
           loading: false,
         });
         wx.showToast({
-          title: '查询失败，请稍候重试',
+          title: "查询失败，请稍候重试",
         });
       }
     } catch (error) {
@@ -124,7 +129,10 @@ Page({
     });
   },
 
-  onLoad() {
+  onLoad(query) {
+    if (query) {
+      this.query = query;
+    }
     this.init(true);
   },
 
@@ -141,26 +149,27 @@ Page({
   },
 
   handleAddCart() {
+    // 加入购物车
     Toast({
       context: this,
-      selector: '#t-toast',
-      message: '点击加购',
+      selector: "#t-toast",
+      message: "点击加购",
     });
   },
 
   tagClickHandle() {
     Toast({
       context: this,
-      selector: '#t-toast',
-      message: '点击标签',
+      selector: "#t-toast",
+      message: "点击标签",
     });
   },
 
   gotoGoodsDetail(e) {
     const { index } = e.detail;
-    const { spuId } = this.data.goodsList[index];
+    const { spuId, productId } = this.data.goodsList[index];
     wx.navigateTo({
-      url: `/pages/goods/details/index?spuId=${spuId}`,
+      url: `/pages/goods/details/index?spuId=${spuId}&productId=${productId}`,
     });
   },
 
@@ -187,12 +196,12 @@ Page({
   },
 
   reset() {
-    this.setData({ minVal: '', maxVal: '' });
+    this.setData({ minVal: "", maxVal: "" });
   },
 
   confirm() {
     const { minVal, maxVal } = this.data;
-    let message = '';
+    let message = "";
     if (minVal && !maxVal) {
       message = `价格最小是${minVal}`;
     } else if (!minVal && maxVal) {
@@ -200,12 +209,12 @@ Page({
     } else if (minVal && maxVal && minVal <= maxVal) {
       message = `价格范围${minVal}-${this.data.maxVal}`;
     } else {
-      message = '请输入正确范围';
+      message = "请输入正确范围";
     }
     if (message) {
       Toast({
         context: this,
-        selector: '#t-toast',
+        selector: "#t-toast",
         message,
       });
     }
@@ -213,14 +222,14 @@ Page({
     this.setData(
       {
         show: false,
-        minVal: '',
+        minVal: "",
         goodsList: [],
         loadMoreStatus: 0,
-        maxVal: '',
+        maxVal: "",
       },
       () => {
         this.init();
-      },
+      }
     );
   },
 });
